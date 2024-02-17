@@ -38,9 +38,9 @@ int main (int argc, char *argv[], char *envp[])
 		if(file == -1)
 			return(1);
 		dup2(fd[0], STDIN_FILENO);
-        dup2(file, STDOUT_FILENO);
-        close(fd[0]);
-        close(fd[1]);
+		dup2(file, STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
 		char *child_argv[] = {"wc","-l", NULL};
 		execve("/usr/bin/wc",child_argv, envp);
 		perror("execve2");
