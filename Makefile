@@ -3,6 +3,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SOURCES = main.c \
 			helping_functions.c \
+			children_functions.c \ 
 			
 			
 OBJ = ${SOURCES:.c=.o}
