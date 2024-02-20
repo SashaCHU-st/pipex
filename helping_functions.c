@@ -6,7 +6,7 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 09:21:01 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/17 15:22:14 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/19 16:43:54 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,44 @@ char	**ft_split(char const *s, char c)
 	}
 	ptr[i] = NULL;
 	return (ptr);
+}
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	size_t	i;
+	size_t	j;
+	char	*new;
+
+	i = 0;
+	j = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	new = (char *) malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!new)
+		return (NULL);
+	while (s1[i] != '\0')
+	{
+		new[i] = s1[i];
+		i++;
+	}
+	while (s2[j] != '\0')
+	{
+		new[i + j] = s2[j];
+		j++;
+	}
+	new[i + j] = '\0';
+	return (new);
+}
+size_t	ft_strlen(const char *str )
+{
+	size_t	i;
+	size_t	count;
+
+	count = 0;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		i++;
+		count++;
+	}
+	return (count);
 }

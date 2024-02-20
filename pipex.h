@@ -6,7 +6,7 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:16:27 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/17 15:41:31 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/20 13:43:31 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,22 @@ typedef struct s_pipex
 	char	*path;
 	int		fd_in;
 	int		fd_out;
-	char	*commands;
+	char	**commands_first_child;
+	char	**commands_second_child;
+	char	**commands_path;
 }		t_pipex;
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
-void	open_fd(t_pipex *data,char **argv, int argc );
-char	*mine_path(char **envp);///need implement
-void	fun_second_child(int fd[2], t_pipex *data, char *argv[], char **envp);
-void	fun_first_child(int fd[2], t_pipex *data, char *argv[], char **envp);
+void	open_fd(t_pipex *data, char **argv, int argc );
+char	*mine_path(char **envp);
+void	fun_second_child(int fd[2], t_pipex *data, char **envp);
+void	fun_first_child(int fd[2], t_pipex *data, char **envp);
 char	**ft_split(char const *s, char c);
 void	free_w(size_t i, char **ptr);
 char	*ft_wd(const char *str, char c);
 int		ft_words(const char *str, char c);
+char	*path_for_commands(char **first_child_command, char **path);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *str );
 
 #endif
