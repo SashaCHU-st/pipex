@@ -6,7 +6,7 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 10:28:39 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/20 16:42:03 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/21 12:44:48 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,22 @@ char	*mine_path(char **envp)
 void	open_fd(t_pipex *data, char **argv, int argc )
 {
 	if (access(argv[1], F_OK) == -1)
+	{
 		perror("No access for input");
+		exit(1);
+	}
 	data->fd_in = open(argv[1], O_RDONLY);
 	if (data->fd_in == -1)
+	{
 		perror("Error in infile");
-	if (access(argv[argc - 1], W_OK) == -1)
-		perror("No access for output");
+		exit(1);
+	}
 	data->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data->fd_out == -1)
+	{
 		perror("Error in outfile");
+		exit(1);
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -42,22 +49,34 @@ int	main(int argc, char **argv, char **envp)
 	int		second_child;
 
 	if (argc != 5)
+	{
 		perror("Less the 5 argc");
+		exit(1);
+	}
 	open_fd(&data, argv, argc);
 	if (pipe(fd) == -1)
+	{
 		perror("Error in pipe()");
+		exit(1);
+	}
 	path = mine_path(envp);
 	data.commands_path = ft_split(path, ':');
 	data.commands_fir_child = ft_split(argv[2], ' ');
 	data.commands_sec_child = ft_split(argv[3], ' ');
 	first_child = fork();
 	if (first_child < 0)
+	{
 		perror("Error first_child fork()");
+		exit(1);
+	}
 	if (first_child == 0)
 		fun_first_child(fd, &data, envp);
 	second_child = fork();
 	if (second_child < 0)
+	{
 		perror("Error second_child fork()");
+		exit(1);
+	}
 	if (second_child == 0)
 		fun_second_child(fd, &data, envp);
 	close(fd[0]);
@@ -66,4 +85,3 @@ int	main(int argc, char **argv, char **envp)
 	waitpid(second_child, NULL, 0);
 	return (0);
 }
-
