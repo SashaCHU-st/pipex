@@ -1,36 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   ft_lstlast_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 14:37:53 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/12 14:55:06 by aheinane         ###   ########.fr       */
+/*   Created: 2023/11/10 17:58:25 by aheinane          #+#    #+#             */
+/*   Updated: 2023/11/11 14:03:37 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-void forki()
-{
-	pid_t p;
+#include "libft.h"
 
-	p = fork();
-	if(p < 0)
-	{
-		printf("fork fails");
-		exit(1);
-	}
-	if(p > 0)
-		printf("hello from parent %d\n", p);
-	else if (p == 0)
-		printf("hellos this is child  %d\n", 0);
-}
-int main()
+t_list	*ft_lstlast(t_list *lst)
 {
-	forki();
-	return(0);	
+	if (!lst)
+		return (NULL);
+	while (lst -> next)
+		lst = lst -> next;
+	return (lst);
 }

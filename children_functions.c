@@ -6,11 +6,38 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:30:26 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/20 18:16:09 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/22 12:28:58 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	creating_children(int fd[2], t_pipex *data, char **envp)
+{
+	int		first_child;
+	int		second_child;
+
+	first_child = fork();
+	if (first_child < 0)
+	{
+		perror("Error first_child fork()");
+		exit(1);
+	}
+	if (first_child == 0)
+		fun_first_child(fd, data, envp);
+	second_child = fork();
+	if (second_child < 0)
+	{
+		perror("Error second_child fork()");
+		exit(1);
+	}
+	if (second_child == 0)
+		fun_second_child(fd, data, envp);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(first_child, NULL, 0);
+	waitpid(second_child, NULL, 0);
+}
 
 void	fun_first_child(int fd[2], t_pipex *data, char **envp)
 {
@@ -48,8 +75,13 @@ char	*path_for_commands(char **child_command, char **path)
 		free(command_temp);
 		if (access(command, F_OK | X_OK) == 0)
 			return (command);
+		free(command);
 		path++;
 	}
-	free(command);
+	if (!*path)
+	{
+		ft_putstr_fd(*child_command, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
 	return (0);
 }

@@ -2,26 +2,31 @@ NAME = pipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SOURCES = main.c \
-			helping_functions.c \
-			children_functions.c \ 
+		children_functions.c \
 			
 			
 OBJ = ${SOURCES:.c=.o}
 
+LIBFT_PATH = ./libft
+LIBFT = $(LIBFT_PATH)/libft.a
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+$(NAME): $(LIBFT) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o:%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
+$(LIBFT):
+	make -C $(LIBFT_PATH) all
 
 clean:
+	make -C $(LIBFT_PATH) clean
 	rm -rf $(OBJ)
 
 fclean: clean
+	make -C $(LIBFT_PATH) fclean
 	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re libft
