@@ -6,25 +6,24 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 10:28:39 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/22 12:52:43 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/24 16:22:34 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*mine_path(char **first_child_com, char **sec_child_com, char **envp)
+char	*mine_path(char **argv, char **envp)
 {
 	if (envp == NULL || *envp == NULL)
 		return (0);
-
 	while (ft_strncmp("PATH=", *envp, 5) != 0)
 	{
 		envp++;
 		if (*envp == NULL)
 		{
-			ft_putstr_fd(*first_child_com, 2);
+			ft_putstr_fd(argv[2], 2);
 			ft_putstr_fd(": No such file or directory\n", 2);
-			ft_putstr_fd(*sec_child_com, 2);
+			ft_putstr_fd(argv[3], 2);
 			ft_putstr_fd(": No such file or directory\n", 2);
 			exit(0);
 		}
@@ -70,10 +69,12 @@ int	main(int argc, char **argv, char **envp)
 		perror("Error in pipe()");
 		exit(1);
 	}
-	data.commands_fir_child = ft_split(argv[2], ' ');
-	data.commands_sec_child = ft_split(argv[3], ' ');
-	path = mine_path(data.commands_fir_child, data.commands_sec_child, envp);
+	path = mine_path(argv, envp);
 	data.commands_path = ft_split(path, ':');
-	creating_children(fd, &data, envp);
+	if (data.commands_path == 0)
+		free_fun(&data);
+	creating_children(argv, fd, &data, envp);
+	close(data.fd_in);
+	close(data.fd_out);
 	return (0);
 }
