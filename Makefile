@@ -4,6 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 SOURCES = main.c \
 		children_functions.c \
 		free.c \
+		pipex_utils.c \
 			
 			
 OBJ = ${SOURCES:.c=.o}

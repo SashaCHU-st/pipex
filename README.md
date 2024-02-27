@@ -1,2 +1,0 @@
-# pipex
-Hive project

@@ -6,13 +6,13 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 10:28:39 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/24 16:22:34 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/27 12:42:33 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*mine_path(char **argv, char **envp)
+char	*mine_path(char **envp)
 {
 	if (envp == NULL || *envp == NULL)
 		return (0);
@@ -20,34 +20,34 @@ char	*mine_path(char **argv, char **envp)
 	{
 		envp++;
 		if (*envp == NULL)
-		{
-			ft_putstr_fd(argv[2], 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			ft_putstr_fd(argv[3], 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			exit(0);
-		}
+			return (0);
 	}
 	return (*envp + 5);
 }
 
-void	open_fd(t_pipex *data, char **argv, int argc )
+int	open_fd_in(t_pipex *data, char **argv)
 {
 	if (access(argv[1], F_OK | R_OK) == -1)
 	{
 		perror("No access for input");
-		exit(0);
+		return (1);
 	}
 	data->fd_in = open(argv[1], O_RDONLY);
 	if (data->fd_in == -1)
 	{
 		perror("Error in infile");
-		exit(1);
+		return (1);
 	}
+	return (0);
+}
+
+void	open_fd_out(t_pipex *data, char **argv, int argc)
+{
 	data->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data->fd_out == -1)
 	{
 		perror("Error in outfile");
+		close(data->fd_in);
 		exit(1);
 	}
 }
@@ -55,7 +55,6 @@ void	open_fd(t_pipex *data, char **argv, int argc )
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	data;
-	int		fd[2];
 	char	*path;
 
 	if (argc != 5)
@@ -63,17 +62,20 @@ int	main(int argc, char **argv, char **envp)
 		perror("Less the 5 argc");
 		exit(1);
 	}
-	open_fd(&data, argv, argc);
-	if (pipe(fd) == -1)
+	path = mine_path(envp);
+	if (pipe(data.fd) == -1)
 	{
 		perror("Error in pipe()");
 		exit(1);
 	}
-	path = mine_path(argv, envp);
 	data.commands_path = ft_split(path, ':');
 	if (data.commands_path == 0)
+	{
+		close(data.fd[0]);
+		close(data.fd[1]);
 		free_fun(&data);
-	creating_children(argv, fd, &data, envp);
+	}
+	creating_children(argv, &data, argc, envp);
 	close(data.fd_in);
 	close(data.fd_out);
 	return (0);

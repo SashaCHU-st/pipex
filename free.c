@@ -6,7 +6,7 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 14:26:32 by aheinane          #+#    #+#             */
-/*   Updated: 2024/02/24 15:55:37 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:59:06 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,10 @@ void	free_array(char **array)
 			i++;
 		}
 	}
+}
+
+void	ft_error(void)
+{
+	perror("Error fork()");
+	exit(1);
 }
